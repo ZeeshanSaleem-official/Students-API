@@ -9,17 +9,17 @@ import (
 )
 
 type HTTPServer struct {
-	Addr string
+	Addr string `yaml:"address" env-required:"true"`
 }
 
 type Config struct {
 	// struct tags
 	Env         string `yaml:"env" env:"ENV" env-required:"true"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
-	HTTPServer  `yaml:http_server`
+	HTTPServer  `yaml:"http_server"`
 }
 
-func MainLoad() *Config {
+func MustLoad() *Config {
 	var configPath string
 	// Config path by env
 	configPath = os.Getenv("CONFIG_PATH")
