@@ -10,6 +10,7 @@ import (
 
 	"github.com/ZeeshanSaleem-official/student-api/internal/config/types"
 	"github.com/ZeeshanSaleem-official/student-api/internal/config/utils/response"
+	"github.com/go-playground/validator"
 )
 
 func New() http.HandlerFunc {
@@ -25,6 +26,15 @@ func New() http.HandlerFunc {
 		// General Error
 		if err != nil {
 			response.WriteJson(w, http.StatusBadRequest, response.GeneralErrors(err))
+		}
+
+		//request Validation
+		V_err := validator.New().Struct(student)
+		//type casting
+		if V_err != nil {
+			val_error := V_err.(validator.ValidationErrors)
+			response.WriteJson(w, http.StatusBadRequest, response.ValidationError(val_error))
+			return
 		}
 		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "Ok"})
 	}
