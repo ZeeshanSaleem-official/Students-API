@@ -26,7 +26,7 @@ go.work.sum
 
 # env file (/ for only root directory config 
 .env
-storage
+/storage
 /config 
 
 

@@ -12,16 +12,23 @@ import (
 
 	"github.com/ZeeshanSaleem-official/student-api/internal/config"
 	"github.com/ZeeshanSaleem-official/student-api/internal/http/handlers/student"
+	"github.com/ZeeshanSaleem-official/student-api/internal/storage/postgresql"
 )
 
 func main() {
 	// config file
 	cfg := config.MustLoad()
 	// database setup
+
+	storage, err := postgresql.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("Database is initialized", slog.String("env", cfg.Env))
 	// router setup
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 
 	//setup server
 	server := http.Server{
@@ -47,7 +54,7 @@ func main() {
 
 	defer cancel()
 
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 
 	if err != nil {
 		slog.Error("Failed to Shutdown the server:", slog.String("Error: ", err.Error()))
