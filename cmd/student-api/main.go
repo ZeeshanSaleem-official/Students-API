@@ -25,10 +25,12 @@ func main() {
 		log.Fatal(err)
 	}
 	slog.Info("Database is initialized", slog.String("env", cfg.Env))
+
 	// router setup
 	router := http.NewServeMux()
 
 	router.HandleFunc("POST /api/students", student.New(storage))
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
 
 	//setup server
 	server := http.Server{
