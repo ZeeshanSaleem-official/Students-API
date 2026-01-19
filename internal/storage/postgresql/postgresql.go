@@ -67,3 +67,25 @@ func (p *Postgresql) StudentGetById(id int64) (types.Student, error) {
 	}
 	return student, nil
 }
+
+func (p *Postgresql) GetAllStudents() ([]types.Student, error) {
+	stmt, err := p.Db.Prepare(`SELECT id, name, email, age FROM students`)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	var students []types.Student
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var student types.Student
+		err := rows.Scan(&student.Id, &student.Name, &student.Email, &student.Age)
+		if err != nil {
+			return nil, err
+		}
+		students = append(students, student)
+	}
+	return students, nil
+}
