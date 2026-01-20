@@ -152,3 +152,29 @@ func Update(storage storage.Storage) http.HandlerFunc {
 	}
 
 }
+func Delete(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Deleting a user!!!")
+		id := r.PathValue("id")
+		// for converting into int64
+		intID, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Info("Error during conversion into int64 in deleting user")
+
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))
+			return
+		}
+		err = storage.DeleteStudent(intID)
+		if err != nil {
+			slog.Info("Error during deleting user", slog.String("id", id))
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))
+			return
+		}
+
+		response.WriteJson(w, http.StatusOK,
+			map[string]string{
+				"status":  "success",
+				"message": "User deleted successfully",
+			})
+	}
+}

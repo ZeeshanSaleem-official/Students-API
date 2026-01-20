@@ -110,3 +110,24 @@ func (p *Postgresql) UpdateStudent(id int64, name string, email string, age int)
 		Age:   age,
 	}, nil
 }
+
+// Delete Student
+func (p *Postgresql) DeleteStudent(id int64) error {
+	// Prepare the query
+	query := "DELETE FROM students WHERE id =$1"
+
+	// Execute it
+	result, err := p.Db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+	// Check if a row was actually deleted
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("student with id %d not found", id)
+	}
+	return nil
+}
