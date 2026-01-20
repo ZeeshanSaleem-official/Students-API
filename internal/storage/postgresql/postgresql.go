@@ -13,6 +13,7 @@ type Postgresql struct {
 	Db *sql.DB
 }
 
+// creating a student
 func New(cfg *config.Config) (*Postgresql, error) {
 	// Open Connection using the postgres driver
 
@@ -50,6 +51,8 @@ func (p *Postgresql) CreateStudent(name string, email string, age int) (int64, e
 	}
 	return id, nil
 }
+
+// Get student by id
 func (p *Postgresql) StudentGetById(id int64) (types.Student, error) {
 	stmt, err := p.Db.Prepare(`SELECT id, name, email, age FROM students WHERE id = $1 LIMIT 1`)
 	if err != nil {
@@ -68,6 +71,7 @@ func (p *Postgresql) StudentGetById(id int64) (types.Student, error) {
 	return student, nil
 }
 
+// Get All students
 func (p *Postgresql) GetAllStudents() ([]types.Student, error) {
 	stmt, err := p.Db.Prepare(`SELECT id, name, email, age FROM students`)
 	if err != nil {
@@ -88,4 +92,21 @@ func (p *Postgresql) GetAllStudents() ([]types.Student, error) {
 		students = append(students, student)
 	}
 	return students, nil
+}
+
+// Update Student
+
+func (p *Postgresql) UpdateStudent(id int64, name string, email string, age int) (types.Student, error) {
+	query := "UPDATE students SET name = $1, email = $2, age = $3 WHERE id = $4"
+
+	_, err := p.Db.Exec(query, name, email, age, id)
+	if err != nil {
+		return types.Student{}, err
+	}
+	return types.Student{
+		Id:    id,
+		Name:  name,
+		Email: email,
+		Age:   age,
+	}, nil
 }

@@ -84,3 +84,43 @@ func GetList(storage storage.Storage) http.HandlerFunc {
 		response.WriteJson(w, http.StatusOK, students)
 	}
 }
+
+func Update(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Updating a user!!!")
+		id := r.PathValue("id")
+		// for converting into int64
+		intID, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Info("Error during conversion into int64 in updating user")
+
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))
+			return
+		}
+		var req types.UpdateStudent
+
+		existingStudent, err := storage.StudentGetById(intID)
+		if err != nil {
+			slog.Info("Error in getting student for updating", slog.String("id", id))
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralErrors(err))
+			return
+		}
+		if req.Name != nil {
+			existingStudent.Name = *req.Name
+		}
+		if req.Email != nil {
+			existingStudent.Email = *req.Email
+		}
+		if req.Age != nil {
+			existingStudent.Age = *req.Age
+		}
+		updatedStudent, err := storage.UpdateStudent(intID, existingStudent.Name, existingStudent.Email, existingStudent.Age)
+		if err != nil {
+			slog.Info("Error during updating a user!!!")
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))
+			return
+		}
+		response.WriteJson(w, http.StatusOK, updatedStudent)
+	}
+
+}
