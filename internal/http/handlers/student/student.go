@@ -97,7 +97,20 @@ func Update(storage storage.Storage) http.HandlerFunc {
 			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))
 			return
 		}
+		// DECODE
 		var req types.UpdateStudent
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralErrors(err))
+		}
+		// VALIDATE
+		if err := validator.New().Struct(req); err != nil {
+			var valErrors validator.ValidationErrors
+			if errors.As(err, &valErrors) {
+				response.WriteJson(w, http.StatusBadRequest, response.ValidationError(valErrors))
+				return
+			}
+			return
+		}
 
 		existingStudent, err := storage.StudentGetById(intID)
 		if err != nil {
@@ -105,16 +118,31 @@ func Update(storage storage.Storage) http.HandlerFunc {
 			response.WriteJson(w, http.StatusBadRequest, response.GeneralErrors(err))
 			return
 		}
+		// Merge Data
 		if req.Name != nil {
+			slog.Info("Name getting in updating", slog.String("name", *req.Name))
 			existingStudent.Name = *req.Name
 		}
 		if req.Email != nil {
+			slog.Info("Email getting in updating", slog.String("name", *req.Email))
 			existingStudent.Email = *req.Email
 		}
 		if req.Age != nil {
+			slog.Info("Age getting in updating", slog.Int("Age", *req.Age))
+
 			existingStudent.Age = *req.Age
 		}
-		updatedStudent, err := storage.UpdateStudent(intID, existingStudent.Name, existingStudent.Email, existingStudent.Age)
+		//save
+		updatedStudent, err := storage.UpdateStudent(
+			intID,
+			existingStudent.Name,
+			existingStudent.Email,
+			existingStudent.Age,
+		)
+		slog.Info("updating a user!!!", slog.String("Student", updatedStudent.Name))
+		slog.Info("updating a user!!!", slog.String("Student", updatedStudent.Email))
+		slog.Info("Age getting in updating", slog.Int("Age", updatedStudent.Age))
+
 		if err != nil {
 			slog.Info("Error during updating a user!!!")
 			response.WriteJson(w, http.StatusInternalServerError, response.GeneralErrors(err))

@@ -9,6 +9,7 @@ type Student struct {
 
 // For updated student
 type UpdateStudent struct {
+	Id    int64   `json:"id"`
 	Name  *string `json:"name" validate:"omitempty"`
 	Email *string `json:"email" validate:"omitempty"`
 	Age   *int    `json:"age" validate:"omitempty"`
