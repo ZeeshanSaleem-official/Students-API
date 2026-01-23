@@ -84,13 +84,13 @@ You should see a log message confirming the server has started at localhost:8080
 
 🔌 API Endpoints
 Base URL: http://localhost:8080
-
-Method,Endpoint,Description,Payload (JSON)
-POST,/api/students,Create a new student,"{""name"": ""Zeeshan"", ""email"": ""test@example.com"", ""age"": 21}"
-GET,/api/students/{id},Retrieve student by ID,N/A
-GET,/api/students,List all students,N/A
-PUT,/api/students/{id},Update student details,"{""name"": ""Zeeshan Updated"", ""age"": 22}"
-DELETE,/api/students/{id},Remove a student,N/A
+| Method | Endpoint | Description | Example Payload (JSON) |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/students` | Create student | `{"name": "Zeeshan", "email": "test@example.com", "age": 21}` |
+| `GET` | `/api/students/{id}` | Get student | N/A |
+| `GET` | `/api/students` | List all | N/A |
+| `PUT` | `/api/students/{id}` | Update details | `{"name": "Zeeshan Updated", "age": 22}` |
+| `DELETE` | `/api/students/{id}` | Remove student | N/A |
 
 
 🧪 Testing with Postman
@@ -112,12 +112,14 @@ Paste the payload:
 
 Hit Send and observe the structured JSON response.
 
-💡 Design Decisions
-Standard Library Routing (net/http): I utilized Go's http.NewServeMux to handle routing logic without relying on heavy external frameworks like Gin. This demonstrates a deep understanding of the language's core capabilities and minimizes runtime overhead.
+## 💡 Design Decisions
 
-Dependency Injection: The student handler receives a storage.Storage interface rather than a concrete struct. This decouples the business logic from the database, adhering to the Dependency Inversion Principle.
+* **Standard Library Routing (`net/http`):** utilized Go's `http.NewServeMux` to handle routing logic without relying on heavy external frameworks like Gin. This demonstrates a deep understanding of the language's core capabilities and minimizes runtime overhead.
 
-Graceful Shutdown: The application listens for OS signals (SIGINT, SIGTERM) to ensure that the server shuts down cleanly, closing active connections and preventing data corruption.
+* **Dependency Injection:** The student handler receives a `storage.Storage` interface rather than a concrete struct. This decouples the business logic from the database, adhering to the Dependency Inversion Principle.
+
+* **Graceful Shutdown:** The application listens for OS signals (`SIGINT`, `SIGTERM`) to ensure that the server shuts down cleanly, closing active connections and preventing data corruption.
 
 📜 License
+
 Distributed under the MIT License.
