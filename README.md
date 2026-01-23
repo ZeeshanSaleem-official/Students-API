@@ -112,3 +112,6 @@ Standard Library Routing (net/http): I utilized Go's http.NewServeMux to handle 
 Dependency Injection: The student handler receives a storage.Storage interface rather than a concrete struct. This decouples the business logic from the database, adhering to the Dependency Inversion Principle.
 
 Graceful Shutdown: The application listens for OS signals (SIGINT, SIGTERM) to ensure that the server shuts down cleanly, closing active connections and preventing data corruption.
+
+📜 License
+Distributed under the MIT License.
