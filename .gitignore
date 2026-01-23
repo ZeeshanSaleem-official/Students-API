@@ -27,7 +27,7 @@ go.work.sum
 # env file (/ for only root directory file )
 .env
 /storage
-config 
+ 
 
 
 # Editor/IDE
