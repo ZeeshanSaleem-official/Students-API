@@ -24,10 +24,10 @@ profile.cov
 go.work
 go.work.sum
 
-# env file (/ for only root directory config 
+# env file (/ for only root directory file )
 .env
 /storage
-/config 
+config 
 
 
 # Editor/IDE
