@@ -98,7 +98,7 @@ Since this system focuses on backend performance, use Postman to interact with t
 
 Open Postman.
 
-Create a request (e.g., POST http://localhost:8082/api/students).
+Create a request (e.g., POST http://localhost:8080/api/students).
 
 Go to Body → Raw → JSON.
 
