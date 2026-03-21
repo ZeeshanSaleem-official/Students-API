@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 1. The PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: student_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: students-api
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d students-api"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Your Go Application Service
+  api:
+    build: .
+    container_name: student_api
+    ports:
+      - "8080:8000" # Maps your host's 8080 to the container's 8000 (from local.yaml)
+    depends_on:
+      db:
+        condition: service_healthy # Waits for DB to be fully ready before starting Go
+    environment:
+      - CONFIG_PATH=./config/local.yaml
+
+volumes:
+  pgdata: # Persists your database data even if the container stops
