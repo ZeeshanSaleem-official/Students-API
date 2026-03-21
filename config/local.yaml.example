@@ -1,0 +1,5 @@
+env: "local"
+# Format: "host=localhost port=5432 user=<YOUR_USER> password=<YOUR_PASSWORD> dbname=<YOUR_DB_NAME> sslmode=disable"
+storage_path: "host=localhost port=5432 user=postgres password=YOUR_SECURE_PASSWORD dbname=students-api sslmode=disable"
+http_server:
+  address: "localhost:8000"
